@@ -154,7 +154,98 @@
             <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_wishlist; ?>" onclick="wishlist.add('<?php echo $product_id; ?>');"><i class="fa fa-heart"></i></button>
             <button type="button" data-toggle="tooltip" class="btn btn-default" title="<?php echo $button_compare; ?>" onclick="compare.add('<?php echo $product_id; ?>');"><i class="fa fa-exchange"></i></button>
           </div>
+         <!-- sucess fail -->
+         <div id="alert-sucess" style="display:none;margin: 10px auto auto;background: #fcf8e3!important; border: 1px solid #faebcc;color: #8a6d3b; padding: 10px; position: relative;z-index: 1;">
+         <p style="text-align:center;">
+         <div style="  float: right!important;"> <a id="hideMessage" style="font-family: 'Open Sans',Arial,sans-serif;font-weight: 700;cursor:pointer" title="Hide">X</a></div>
+        You Have Sucessfully Applied to the Job.
+        </p>
+       </div>
+       <div id="alert-sucess2" style="display:none;margin: 10px auto auto;background: #fcf8e3!important; border: 1px solid #faebcc;color: #8a6d3b; padding: 10px; position: relative;z-index: 1;">
+         <p style="text-align:center;">
+         <div style="  float: right!important;"> <a id="hideMessage2" style="font-family: 'Open Sans',Arial,sans-serif;font-weight: 700;cursor:pointer" title="Hide">X</a></div>
+        Candidate shaortlisted and Informed!!
+        </p>
+       </div>
+       <script>
+       $('#hideMessage').click(function(){
+         $('#alert-sucess').hide();
+         });
+
+       $('#hideMessage2').click(function(){
+         $('#alert-sucess2').hide();
+         });
+       </script>
+         <!-- end sucess fail -->
           <h3>
+            <?php  if($jan==5){ 
+            if(isset($_SESSION['SESS_USER_ID_AZ'])){ 
+                $DB_HOST  ="localhost";
+                  $DB_USER ='nishant'; $DB_PASSWORD    ='123_az'; 
+                   $DB_DATABASE    ='az'; $conn = mysql_connect($DB_HOST,$DB_USER,$DB_PASSWORD) or mysql_error(); mysql_select_db($DB_DATABASE, $conn) or die("Something Went Wrong !!");
+                       $errmsg_arr = array();
+                         $errflag = false;
+                         $id=$_SESSION['SESS_USER_ID_AZ'];
+                        // echo $id;
+                            $queryuser="select * FROM az_user WHERE user_id='$id'";
+                            $resultuser=mysql_query($queryuser);
+                             $rowuser=mysql_fetch_array($resultuser);
+                             
+
+              ?>
+            <button  type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+          border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
+           <span id="applyjob">Apply To the Job</span>
+            </button>
+            <?php } else { ?>
+             <button  type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+          border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
+           <span>Login to Apply the Job</span>
+            </button>
+            <?php } ?>
+
+            <script>
+            // Apply to jobs script
+              $('#applyjob').click(function(){
+                var applytoemail="<?php echo $sku;?>";
+                var applybyemail="<?php echo $rowuser['email']; ?>";
+                var applyname="<?php  echo $rowuser['firstname']; ?>";
+                var resume="<?php echo $rowuser['resume']; ?>"
+
+                 $.ajax({url: './catalog/applyjob.php?byemail='+applybyemail + '&toemail=' +applytoemail + '&applyname=' + applyname + '&resume=' +resume,
+                     success: function(output) {
+                      $('#alert-sucess').show();
+                     },
+                   error: function (xhr, ajaxOptions, thrownError) {
+                   //alert(xhr.status + " "+ thrownError);
+                   alert('Something went wrong. Reload the page !!');
+                   }}); 
+              });
+
+              // Shortlist candidate script
+              
+            </script>
+            <?php }
+
+
+            elseif($jan==4){
+             if(isset($_SESSION['SESS_USER_ID_AZ'])){ ?>
+            <button id="ahortlistjob" type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+          border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
+           <span id="">ShortList Candidate</span>
+            </button>
+            <?php } else {?>
+            <button id="ahortlistjob" type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+          border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
+           <span >Login to Select Candidate</span>
+            </button>
+            <?php  } ?>
+
+            
+           <?php } ?>
+
+
+
             <?php  if($jan==4|| $jan==5){}
             else {echo $heading_title;} ?>
           </h3>

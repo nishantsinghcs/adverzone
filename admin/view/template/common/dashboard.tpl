@@ -2,7 +2,6 @@
 <div id="content">
   <div class="page-header">
     <div class="container-fluid">
-      
       <h1><?php
         if ($_SESSION['SESS_USERGRP']==1){
         echo $heading_title; }?></h1>

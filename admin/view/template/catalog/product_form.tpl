@@ -1,9 +1,24 @@
 <?php 
 //start user use 
 if($_SESSION['SESS_USERGRP']==11){
-
-?>
-
+                    if(isset($_GET['job'])){$pathid=65;}
+                    elseif (isset($_GET['jobposter'])) {$pathid=65;}
+                      elseif (isset($_GET['sell'])) {$pathid=117;}
+                    elseif (isset($_GET['rent'])) {$pathid=118;}
+                      elseif (isset($_GET['classified'])) {$pathid=119;}
+                      elseif (isset($_GET['motor'])) {$pathid=59;}
+                        else{$pathid=0;}
+  ?>
+                        <?php // add Sub categories and manufacturor mannually
+                        ob_start();
+                        $DB_HOST  ="localhost"; $DB_USER ='nishant'; $DB_PASSWORD    ='123_az'; $DB_DATABASE    ='az'; $conn = mysql_connect($DB_HOST,$DB_USER,$DB_PASSWORD) or mysql_error(); mysql_select_db($DB_DATABASE, $conn) or die("Something Went Wrong !!");$errmsg_arr = array();
+                             $errflag = false;
+                              if($_SESSION['lang']=='en'){$lang=1;}elseif ($_SESSION['lang']=='ar') {$lang=2;mysql_query("SET NAMES 'utf8'"); mysql_query('SET CHARACTER SET utf8');}
+                             $qqqq="SELECT * FROM az_category_description WHERE category_id IN (select category_id FROM az_category_path WHERE path_id='$pathid')AND language_id='$lang'";
+                              $catresultwa=mysql_query($qqqq);
+                              $query112="select * FROM az_manufacturer";$resultwa=mysql_query($query112);
+                              
+                            ?>
 
 <?php echo $header; ?><?php echo $column_left; ?>
 <div id="content">
@@ -62,6 +77,40 @@ if($_SESSION['SESS_USERGRP']==11){
               <div class="tab-content">
                 <?php foreach ($languages1 as $language) { ?>
                 <div class="tab-pane" id="language<?php echo $language['language_id']; ?>">
+                  <!-- sub category portion -->
+                  <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-ean"><?php
+                    if($_SESSION['lang']=='en'){echo "Sub Category";}
+                        elseif ($_SESSION['lang']=='ar') { echo " الفئات الفرعية "; }?>
+                      </label>
+                <div class="col-sm-10">
+                  <input type="hidden" name="product_categorys[]" value="<?php echo $pathid; ?>" >
+                   <select name="product_categorys[]" class="form-control">
+                  <?php  while($rows=mysql_fetch_array($catresultwa)){?>
+                    <option value=<?php echo $rows[0]; ?> ><?php echo $rows[2]; ?></option>
+                    <?php } ?>
+                    </select>
+                </div>
+              </div>
+              <!-- end sub cat -->
+              <!-- City -->
+               <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-isbn"><span data-toggle="tooltip" title="UAE CITY eg. 'Dubai'">City</span></label>
+                <div class="col-sm-10">
+                  <select type="text" name="isbn" id="input-isbn" class="form-control" />
+                    <option value="1">Dubai</option>
+                    <option value="2">Abu Dhabi</option>
+                    <option value="3">Ajman</option>
+                    <option value="4">Al Ain</option>
+                    <option value="5">Fujairah</option>
+                    <option value="6">Ras Al Khaimah</option>
+                    <option value="7">Sharjah</option>
+                    <option value="8">Umm Al Quwait</option>
+                    <option value="9">Other</option>
+                  </select> 
+                </div>
+              </div>
+              <!-- end city -->
                    <div class="form-group required">
                     <label class="col-sm-2 control-label" for="input-name<?php echo $language['language_id']; ?>">
                       <?php
@@ -98,10 +147,10 @@ if($_SESSION['SESS_USERGRP']==11){
                     ?>
                   </label>
                     <div class="col-sm-10">
-                     
+                    
                       <input type="text" name="product_description[<?php echo $language['language_id']; ?>][name]" 
                             value="<?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['name'] : '';?>" 
-                             placeholder="Classified Title" id="input-name<?php echo $language['language_id']; ?>" class="form-control" />
+                             placeholder="<?php if($_SESSION['lang']=='en'){echo "Classified title";} elseif ($_SESSION['lang']=='ar') { echo " عنوان سري "; }?>" id="input-name<?php echo $language['language_id']; ?>" class="form-control" />
                       <?php if (isset($error_name[$language['language_id']])) { ?>
                       <div class="text-danger"><?php echo $error_name[$language['language_id']]; ?></div>
                       <?php } ?>
@@ -110,14 +159,48 @@ if($_SESSION['SESS_USERGRP']==11){
                   <!-- motor -->
                    <?php  if (isset($_GET['motor'])) { ?>
                         <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="<?php echo $help_manufacturer; ?>"><?php 
+                <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="Choose Make Company"><?php 
                 if($_SESSION['lang']=='en'){ echo $entry_manufacturer; }
                         elseif ($_SESSION['lang']=='ar') {echo " الشركة المصنعة ";}
 
                 ?></span></label>
+                
                 <div class="col-sm-10">
-                  <input type="text" name="manufacturer" value="<?php echo $manufacturer ?>" placeholder="<?php echo $entry_manufacturer; ?>" id="input-manufacturer" class="form-control" />
-                  <input type="hidden" name="manufacturer_id" value="<?php echo $manufacturer_id; ?>" />
+                 <select name="manufacturer_idd" id="mannid" class="form-control">
+                  <option value=0>Select</option>
+                  <?php  while($rows=mysql_fetch_array($resultwa)){?>
+                    <option value="<?php echo $rows[0]; ?>"><?php echo $rows[1]; ?></option>
+                    <?php } ?>
+                    </select>
+                   <script>
+                  $('#mannid').on('change', function(){
+                    if(this.value==0){
+                      $('#input-ean').empty();
+                      //alert("removed");
+                    }
+                    else{
+                      var manid=this.value;
+                      //console.log(manid);
+                       $.ajax({url: 'getajaxmodel.php?manid='+this.value,
+                          success: function(output) {
+                            document.getElementById("input-ean").innerHTML=output;
+                      },
+                           error: function (xhr, ajaxOptions, thrownError) {
+                          alert(xhr.status + " "+ thrownError);
+                        }}); 
+                         }
+                      });
+                  </script>
+                </div>
+              </div>
+              <!-- ean  MODEL -->
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-ean"><span data-toggle="tooltip" title="Choose Model eg X1 for BMW">
+                  <?php if($_SESSION['lang']=='en'){echo"Model";}elseif ($_SESSION['lang']=='ar') {echo "نموذج";} ?></span></label>
+                <div class="col-sm-10">
+                  <select name="ean" value="<?php echo $ean; ?>" placeholder="Model" id="input-ean" class="form-control" />
+                    
+                  </select>
                 </div>
               </div>
               <?php  } ?>
@@ -129,7 +212,7 @@ if($_SESSION['SESS_USERGRP']==11){
 
                 if(isset($_GET['job']))
                         {
-                          if($_SESSION['lang']=='en'){echo"Exp. in years<br>(eg 1 or 2):";}
+                          if($_SESSION['lang']=='en'){echo"Exp. in years :";}
                         elseif ($_SESSION['lang']=='ar') {echo "مجموع الخبرة في السنوات <br> (مثل 1 أو 2)";}
                       
                         }
@@ -155,8 +238,8 @@ if($_SESSION['SESS_USERGRP']==11){
                          
                         }
                         else{
-                          if($_SESSION['lang']=='en'){echo"Year:";}
-                        elseif ($_SESSION['lang']=='ar') {echo "عام:";}
+                          if($_SESSION['lang']=='en'){echo"";}
+                        elseif ($_SESSION['lang']=='ar') {echo "";}
                          
                         }
                
@@ -213,8 +296,8 @@ if($_SESSION['SESS_USERGRP']==11){
                             
                         <?php }
                         else{
-                          if($_SESSION['lang']=='en'){echo"Year:";}
-                        elseif ($_SESSION['lang']=='ar') {echo "عام:";}
+                          if($_SESSION['lang']=='en'){echo"";}
+                        elseif ($_SESSION['lang']=='ar') {echo "";}
                          
                         }
                
@@ -226,15 +309,9 @@ if($_SESSION['SESS_USERGRP']==11){
                
               
                 <?php  if (isset($_GET['motor'])) { ?>
-                 <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-ean"><span data-toggle="tooltip" title="<?php echo $help_ean; ?>">
-                  <?php if($_SESSION['lang']=='en'){echo"Model";}elseif ($_SESSION['lang']=='ar') {echo "نموذج";} ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="ean" value="<?php echo $ean; ?>" placeholder="Model" id="input-ean" class="form-control" />
-                </div>
-              </div>
+                 
                 <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-upc"><span data-toggle="tooltip" title="<?php echo $help_upc; ?>"><?php
+                <label class="col-sm-2 control-label" for="input-upc"><span data-toggle="tooltip" title="Leave 0 for new Veichel"><?php
                         if($_SESSION['lang']=='en'){echo"Kilometers:";}
                         elseif ($_SESSION['lang']=='ar') {echo "كم";}
                          //echo $entry_upc;
@@ -269,7 +346,7 @@ if($_SESSION['SESS_USERGRP']==11){
                     <label class="col-sm-2 control-label" for="input-meta-title<?php echo $language['language_id']; ?>"><?php 
                      if(isset($_GET['job']))
                         {
-                          if($_SESSION['lang']=='en'){echo"Maximum Education<br>(Bachlors/Masters/PHD):";}
+                          if($_SESSION['lang']=='en'){echo"Maximum Education:";}
                         elseif ($_SESSION['lang']=='ar') {echo "مجموع الخبرة في السنوات <br>(مثل 1 أو 2)";}
                       
                         }
@@ -354,8 +431,8 @@ if($_SESSION['SESS_USERGRP']==11){
                       <?php } ?>
                     </div>
                   </div>
-                  <div class="form-group" >
-                    <label class="col-sm-2 control-label" for="input-tag<?php echo $language['language_id']; ?>"><span data-toggle="tooltip" title="<?php echo $help_tag; ?>"><?php 
+                  <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input-tag<?php echo $language['language_id']; ?>"><span data-toggle="tooltip" title="Select Yes or No"><?php 
                     if($_SESSION['lang']=='en'){echo "Urgency";}
                         elseif ($_SESSION['lang']=='ar') {echo "الاستعجال (نعم / لا)";}
                       
@@ -410,7 +487,7 @@ if($_SESSION['SESS_USERGRP']==11){
                       <textarea name="product_description[<?php echo $language['language_id']; ?>][description]" placeholder="<?php echo $entry_description; ?>" id="input-description<?php echo $language['language_id']; ?>"><?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['description'] : ''; ?></textarea>
                     </div>
                   </div>
-
+                      <!--
                      <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-category"><span data-toggle="tooltip" title="<?php echo $help_category; ?>"><?php
                     if($_SESSION['lang']=='en'){echo $entry_category;}
@@ -430,8 +507,8 @@ if($_SESSION['SESS_USERGRP']==11){
                     <?php } ?>
                   </div>
                 </div>
-              </div>
-
+              </div> -->
+                  <br><br><br>
                <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-image">
                   <?php 
@@ -545,7 +622,7 @@ if($_SESSION['SESS_USERGRP']==11){
 
                  <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-sku">
-                  <span data-toggle="tooltip" title="<?php echo "$help_sku;" ?>">
+                  <span data-toggle="tooltip" title="To which the user can contact.">
                   <?php
                   if(isset($_GET['job']))
                         {
@@ -780,14 +857,6 @@ if($_SESSION['SESS_USERGRP']==11){
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label" for="input-isbn"><span data-toggle="tooltip" title="<?php echo $help_isbn; ?>"><?php echo $entry_isbn; ?></span></label>
-                <div class="col-sm-10">
-                  <input type="text" name="isbn" value="<?php echo $isbn; ?>" placeholder="<?php echo $entry_isbn; ?>" id="input-isbn" class="form-control" />
-                </div>
-              </div>
-             
-            
-              <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-tax-class"><?php echo $entry_tax_class; ?></label>
                 <div class="col-sm-10">
                   <select name="tax_class_id" id="input-tax-class" class="form-control">
@@ -864,6 +933,7 @@ if($_SESSION['SESS_USERGRP']==11){
                 <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="<?php echo $help_manufacturer; ?>"><?php echo $entry_manufacturer; ?></span></label>
                 <div class="col-sm-10">
                   <input type="text" name="manufacturer" value="<?php echo $manufacturer ?>" placeholder="<?php echo $entry_manufacturer; ?>" id="input-manufacturer" class="form-control" />
+
                   <input type="hidden" name="manufacturer_id" value="<?php echo $manufacturer_id; ?>" />
                 </div>
               </div>
@@ -1478,62 +1548,7 @@ if($_SESSION['SESS_USERGRP']==11){
 $('#input-description<?php echo $language['language_id']; ?>').summernote({height: 100});
 <?php } ?>
 //--></script> 
-  <script type="text/javascript"><!--
-// Manufacturer
-$('input[name=\'manufacturer\']').autocomplete({
-  'source': function(request, response) {
-    $.ajax({
-      url: 'index.php?route=catalog/manufacturer/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
-      dataType: 'json',     
-      success: function(json) {
-        json.unshift({
-          manufacturer_id: 0,
-          name: '<?php echo $text_none; ?>'
-        });
-        
-        response($.map(json, function(item) {
-          return {
-            label: item['name'],
-            value: item['manufacturer_id']
-          }
-        }));
-      }
-    });
-  },
-  'select': function(item) {
-    $('input[name=\'manufacturer\']').val(item['label']);
-    $('input[name=\'manufacturer_id\']').val(item['value']);
-  } 
-});
-
-// Category
-$('input[name=\'category\']').autocomplete({
-  'source': function(request, response) {
-    $.ajax({
-      url: 'index.php?route=catalog/category/autocomplete&token=<?php echo $token; ?>&filter_name=' +  encodeURIComponent(request),
-      dataType: 'json',     
-      success: function(json) {
-        response($.map(json, function(item) {
-          return {
-            label: item['name'],
-            value: item['category_id']
-          }
-        }));
-      }
-    });
-  },
-  'select': function(item) {
-    $('input[name=\'category\']').val('');
-    
-    $('#product-category' + item['value']).remove();
-    
-    $('#product-category').append('<div id="product-category' + item['value'] + '"><i class="fa fa-minus-circle"></i> ' + item['label'] + '<input type="hidden" name="product_category[]" value="' + item['value'] + '" /></div>'); 
-  }
-});
-
-$('#product-category').delegate('.fa-minus-circle', 'click', function() {
-  $(this).parent().remove();
-});
+  <script type="text/javascript">
 
 // Filter
 $('input[name=\'filter\']').autocomplete({
@@ -1959,7 +1974,10 @@ $('.datetime').datetimepicker({
   <script type="text/javascript"><!--
 $('#language a:first').tab('show');
 $('#option a:first').tab('show');
-//--></script></div>
+//--></script>
+
+
+</div>
 <?php echo $footer; ?> 
 
 
@@ -3383,6 +3401,8 @@ $('#option a:first').tab('show');
 <?php } 
 // end admin use
 ?>
+
+
 
 
 

@@ -19,4 +19,9 @@ define('DIR_MODIFICATION', 'C:\xampp\htdocs\az/system/modification/');
 define('DIR_LOGS', 'C:\xampp\htdocs\az/system/logs/');
 
 // DB
-
+define('DB_DRIVER', 'mysqli');
+define('DB_HOSTNAME', 'localhost');
+define('DB_USERNAME', 'nishant');
+define('DB_PASSWORD', '123_az');
+define('DB_DATABASE', 'az');
+define('DB_PREFIX', 'az_');
