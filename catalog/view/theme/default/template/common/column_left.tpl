@@ -3,7 +3,8 @@
   $_SESSION['lang']='ar';
 }
 if(isset($_GET['path'])){
-  $pathid=$_GET['path'];
+  $pathid = explode("_", $_GET['path']);
+  $pathid=$pathid[0];
 ob_start();$DB_HOST  ="localhost"; $DB_USER ='nishant'; $DB_PASSWORD    ='123_az'; $DB_DATABASE    ='az'; $conn = mysql_connect($DB_HOST,$DB_USER,$DB_PASSWORD) or mysql_error(); mysql_select_db($DB_DATABASE, $conn) or die("I cannot  find the database.");$errmsg_arr = array();
 
 if($_SESSION['lang']=='en'){$lang=1;}elseif ($_SESSION['lang']=='ar') {$lang=2;mysql_query("SET NAMES 'utf8'"); mysql_query('SET CHARACTER SET utf8');}
@@ -26,6 +27,15 @@ $result122=mysql_query($query122);
       <?php if($_SESSION['lang']=='en'){echo "Search";}
         elseif ($_SESSION['lang']=='ar') {echo " بحث ";} ?>
 </b></p> 
+        <p class="list-group-item active" style="border-top:none;">
+        <b><?php if($_SESSION['lang']=='en'){echo "Job Type";}
+        elseif ($_SESSION['lang']=='ar') {echo " الدور الوظيفي ";} ?></b>
+        <select style="width:100%" id="jobtype" name="jobtype">
+          <option value="5"> Company Openings </option>
+          <option value="4"> Job Wanted </option>
+        </select>
+       </p>
+
       <p class="list-group-item active" style="border-top:none;">
         <b><?php if($_SESSION['lang']=='en'){echo "Job Role";}
         elseif ($_SESSION['lang']=='ar') {echo " الدور الوظيفي ";} ?></b>
@@ -138,8 +148,9 @@ $result122=mysql_query($query122);
           var jobname=document.getElementById('jname').value;
           var time=document.getElementById('time').value;
           var elevel=document.getElementById('elevel').value;
+          var jtype=document.getElementById('jobtype').value;
           var path= <?php echo $pathid; ?>;
-      window.location='./index.php?route=product/search&search=' + search + '&moon_is_Lul=' + loc +'&category_id=65&jobname=' +jobname + '&time=' +time + '&sprice=' +price + '&exp=' +exp + '&elevel=' +elevel + '&path=' +path;
+      window.location='./index.php?route=product/search&search=' + search + '&moon_is_Lul=' + loc +'&category_id=65&jobname=' +jobname + '&time=' +time + '&sprice=' +price + '&exp=' +exp + '&elevel=' +elevel + '&type='+ jtype+ '&path=' +path;
       // alert(catid);
         }
         </script>
@@ -169,7 +180,7 @@ else if($_GET['path']==59){
       
         <p class="list-group-item active" style="border-top:none;">
       <select id="cat" >
-        <option value=""><?php if($_SESSION['lang']=='en'){echo "All Categories";}
+        <option value="0"><?php if($_SESSION['lang']=='en'){echo "All Categories";}
         elseif ($_SESSION['lang']=='ar') {echo "جميع الفئات ";} ?></option>
         <?php 
        while($row12=mysql_fetch_array($result12)){?>
@@ -177,10 +188,51 @@ else if($_GET['path']==59){
        <?php } ?>
        </select>  
       </p>
-      <p class="list-group-item active" style="border-top:none;">
-      <b><?php if($_SESSION['lang']=='en'){echo "Makes";}
+      <!-- js for category according to manufacturer -->
+       <script>       
+
+                  $('#cat').on('change', function(){
+                    if(this.value==0){
+                      $('#brand').hide();
+                      $('#manumodel').hide();
+                      $('#model').hide();
+                        $('#inermodel').hide();
+                      }
+                       else{
+                     if(this.value==60){
+                        $('#brand').show();
+                      $('#manumodel').show();
+                      $('#model').show();
+                        $('#inermodel').show();
+                    }
+                     else if(this.value==61){
+                       $('#brand').hide();
+                      $('#manumodel').hide();
+                      $('#model').hide();
+                        $('#inermodel').hide();
+                        // start for auto part 
+                        $('#autopartcat').show();
+                         $('#autopartcathead').show();
+                         }
+                       else if(this.value==62){
+                        alert("Boats");
+                      }
+                       else if(this.value==63){
+                        alert("Heavy Veichels");
+                      }
+                       else if(this.value==64){
+                        alert("Motorcycles");
+                      }
+                       else if(this.value==59){
+                        alert("Motors");
+                      }
+                    }
+                      });
+                  </script>
+      <p class="list-group-item active" style="border-top:none;" >
+      <b id="manumodel"style="display:none;"><?php if($_SESSION['lang']=='en'){echo "Makes";}
         elseif ($_SESSION['lang']=='ar') {echo " جعل ";} ?></b>
-      <select id="brand" style="width:100%">
+      <select id="brand" style="width:100%;display:none">
         <option value="0"> <?php if($_SESSION['lang']=='en'){echo "Any Makes";}
         elseif ($_SESSION['lang']=='ar') {echo " أي جعل ";} ?></option>
         
@@ -190,30 +242,18 @@ else if($_GET['path']==59){
        <?php } ?>
         </select>  
       </p>
-      <script>
-                  $('#brand').on('change', function(){
-                    if(this.value==0){
-                      $('#model').empty();
-                      //alert("removed");
-                    }
-                    else{
-                      var manid=this.value;
-                      //console.log(manid);
-                       $.ajax({url: './admin/getajaxmodel.php?manid='+this.value,
-                          success: function(output) {
-                            document.getElementById("model").innerHTML=output;
-                      },
-                           error: function (xhr, ajaxOptions, thrownError) {
-                          alert(xhr.status + " "+ thrownError);
-                        }}); 
-                         }
-                      });
-                  </script>
+    
       <!-- model of car -->
-      <p class="list-group-item active" style="border-top:none;">
-      <b><?php if($_SESSION['lang']=='en'){echo "Model";}
+      <p class="list-group-item active" style="border-top:none;" >
+      <b id="inermodel" style="display:none;"><?php if($_SESSION['lang']=='en'){echo "Model";}
         elseif ($_SESSION['lang']=='ar') {echo " جعل ";} ?></b>
-      <select id="model" style="width:100%"> 
+      <select id="model" style="width:100%;display:none;" > 
+        </select>  
+      </p>
+       <p class="list-group-item active" style="border-top:none;" >
+      <b id="autopartcathead" style="display:none;"><?php if($_SESSION['lang']=='en'){echo "Autopart Category";}
+        elseif ($_SESSION['lang']=='ar') {echo " جعل ";} ?></b>
+      <select id="autopartcat" style="width:100%;display:none;" > 
         </select>  
       </p>
       <p class="list-group-item active" style="border-top:none;">
@@ -294,11 +334,7 @@ else if($_GET['path']==59){
         elseif ($_SESSION['lang']=='ar') {echo "الكلمات الرئيسية";} ?>">
        </p>
 
-   
-
-
-      
-        <p class="list-group-item active" style="border-top:none;">
+     <p class="list-group-item active" style="border-top:none;">
           <input type="button" style="background:#03a9ff;color:#fbfbfb;width:50%;height:30px;border-radius:5px;border:none;" Onclick="searchdata();" 
           value="<?php if($_SESSION['lang']=='en'){echo "Search";}
         elseif ($_SESSION['lang']=='ar') {echo " بحث ";} ?> ">
@@ -644,3 +680,25 @@ else{
 </column>
 
 <?php  }} ?>
+  <script>
+  // MOTOR CAR MODEL SHOW according to manufacturer
+                  $('#brand').on('change', function(){
+                    if(this.value==0){
+                      $('#model').empty();
+                      //alert("removed");
+                    }
+                    else{
+                      var manid=this.value;
+                      //console.log(manid);
+                       $.ajax({url: './admin/getajaxmodel.php?manid='+this.value,
+                          success: function(output) {
+                            document.getElementById("model").innerHTML=output;
+                      },
+                           error: function (xhr, ajaxOptions, thrownError) {
+                          alert(xhr.status + " "+ thrownError);
+                        }}); 
+                         }
+                      });
+
+     //             
+                  </script>

@@ -331,7 +331,7 @@ h1 {
 .adpost{
     background:#0094b9;border-radius:100%;height:200px;width:200px;padding:20px;margin-left:12%;display:block;margin-top:20px
 }
-.yo1{cursor:pointer;padding:75px 10px 10px 40px;color:#fbfbfb;font-family:Stencil Std;font-size:16px;border-radius:100%}
+.yo1{cursor:pointer;padding:75px 10px 10px 40px;color:#fbfbfb;font-family:Stencil Std;font-size:12px;border-radius:100%}
 .youradheader{font-family:Stencil Std;font-size:15px;float:left;padding:20px;width:100%;background:#fbfbfb;margin-left:-50px}
 .adhits{margin-left: 80%}
 .loweradshow{display:block;height:500px;width:90%;border-radius:8px;overflow-y: scroll;overflow-x:hidden;margin-left:20px;}
@@ -390,7 +390,7 @@ $(function() {
   <div class='row' style="background:tomato;padding:40px;margin-left:-150px">
       <div class='col-lg-3 col-md-3 col-sm-6 adpost' >
        <div  class="yo yo1">
-       <?php if($_SESSION['lang']=='en'){echo" POST NEW CLASSIFIED";}
+       <?php if($_SESSION['lang']=='en'){echo" POST New Advertisement";}
                   elseif ($_SESSION['lang']=='ar') {echo "اعلانات جديدة";} ?>
        
     </div>

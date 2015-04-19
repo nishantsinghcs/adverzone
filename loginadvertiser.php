@@ -564,7 +564,7 @@ h1 {
                       <div class="nameinput"> <?php
                 if($_SESSION['lang']=='en'){echo "Password"; }
                   elseif ($_SESSION['lang']=='ar') {echo "كلمة المرور";} 
-                  ?></div><input type"password" name="password" class="input-field">
+                  ?></div><input type="password" name="password" class="input-field">
                </div>
               <div class="input-div">
                       <div class="nameinput">
@@ -624,6 +624,7 @@ h1 {
             </form> 
              </div>
             <!-- end company registration -->
+
           <!-- people register here -->
            <div style="display:none" name="indv_registration" id="ind_registration">
             <br>
@@ -676,7 +677,7 @@ h1 {
                 if($_SESSION['lang']=='en'){echo " Password:"; }
                   elseif ($_SESSION['lang']=='ar') {echo "كلمة السر:";} 
                   ?>
-                  </div><input type"password" name="password" class="input-field">
+                  </div><input name="password" class="input-field" type="password">
               </div>
                <div class="input-div">
                         <div style="float:left;width:150px;">

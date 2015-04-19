@@ -51,6 +51,14 @@ $result122=mysql_query($query122);
       <?php if($_SESSION['lang']=='en'){echo "Search";}
         elseif ($_SESSION['lang']=='ar') {echo " بحث ";} ?>
 </b></p> 
+<p class="list-group-item active" style="border-top:none;">
+        <b><?php if($_SESSION['lang']=='en'){echo "Job Type";}
+        elseif ($_SESSION['lang']=='ar') {echo " الدور الوظيفي ";} ?></b>
+        <select style="width:100%" id="jobtype" name="jobtype">
+          <option value="5"> Company Openings </option>
+          <option value="4"> Job Wanted </option>
+        </select>
+       </p>
       <p class="list-group-item active" style="border-top:none;">
         <b><?php if($_SESSION['lang']=='en'){echo "Job Role";}
         elseif ($_SESSION['lang']=='ar') {echo " الدور الوظيفي ";} ?></b>
@@ -163,8 +171,9 @@ $result122=mysql_query($query122);
           var jobname=document.getElementById('jname').value;
           var time=document.getElementById('time').value;
           var elevel=document.getElementById('elevel').value;
+          var jtype=document.getElementById('jobtype').value;
           var path= <?php echo $pathid; ?>;
-      window.location='./index.php?route=product/search&search=' + search + '&moon_is_Lul=' + loc +'&category_id=65&jobname=' +jobname + '&time=' +time + '&sprice=' +price + '&exp=' +exp + '&elevel=' +elevel + '&path=' +path;
+      window.location='./index.php?route=product/search&search=' + search + '&moon_is_Lul=' + loc +'&category_id=65&jobname=' +jobname + '&time=' +time + '&sprice=' +price + '&exp=' +exp + '&elevel=' +elevel + '&type='+ jtype+ '&path=' +path;
       // alert(catid);
         }
         </script>

@@ -300,7 +300,7 @@ if(isset($_GET['route']) && $_GET['route']=="common/home" || !isset($_GET['route
           var city=document.getElementById('city').value;
         var search=document.getElementById('srchbox').value;
           var catid=document.getElementById('catt').value;
-      window.location='./index.php?route=product/search&search=' + search + '&category_id=' + catid + '&city=' + city;
+      window.location='./index.php?route=product/search&search=' + search + '&category_id=' + catid + '&city=' + city + '&path=119';
       // alert(catid);
         }
         </script>

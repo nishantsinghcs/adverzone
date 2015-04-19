@@ -10,8 +10,8 @@ final class MySQLi {
 			trigger_error('Error: Could not make a database link (' . $this->link->connect_errno . ') ' . $this->link->connect_error);
 		}
 
-		@$this->link->set_charset("utf8");
-		@$this->link->query("SET SQL_MODE = ''");
+		$this->link->set_charset("utf8");
+		$this->link->query("SET SQL_MODE = ''");
 	}
 
 	public function query($sql) {
@@ -36,9 +36,9 @@ final class MySQLi {
 			} else {
 				return true;
 			}
-		} // else {
-		//	trigger_error('Error: ' . $this->link->error  . '<br />Error No: ' . $this->link->errno . '<br />' . $sql);
-	//}
+		} else {
+			trigger_error('Error: ' . $this->link->error  . '<br />Error No: ' . $this->link->errno . '<br />' . $sql);
+		}
 	}
 
 	public function escape($value) {

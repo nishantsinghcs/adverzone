@@ -174,6 +174,9 @@ class ModelCatalogProduct extends Model {
 		if (!empty($data['modelwa'])){
 			$sql .= "AND p.ean LIKE '%" . $data['modelwa'] ."%'";
 		}
+		if (!empty($data['type'])){
+			$sql .= "AND p.jan =". $data['type'];
+		}
 		
 		// for motor end 
 

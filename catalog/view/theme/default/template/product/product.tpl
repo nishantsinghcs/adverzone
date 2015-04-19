@@ -222,26 +222,52 @@
                    }}); 
               });
 
-              // Shortlist candidate script
-              
-            </script>
+             </script>
             <?php }
 
 
             elseif($jan==4){
-             if(isset($_SESSION['SESS_USER_ID_AZ'])){ ?>
-            <button id="ahortlistjob" type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+             if(isset($_SESSION['SESS_USER_ID_AZ'])){
+                 $DB_HOST  ="localhost";
+                  $DB_USER ='nishant'; $DB_PASSWORD    ='123_az'; 
+                   $DB_DATABASE    ='az'; $conn = mysql_connect($DB_HOST,$DB_USER,$DB_PASSWORD) or mysql_error(); mysql_select_db($DB_DATABASE, $conn) or die("Something Went Wrong !!");
+                       $errmsg_arr = array();
+                         $errflag = false;
+                         $id=$_SESSION['SESS_USER_ID_AZ'];
+                        // echo $id;
+                            $queryuser="select * FROM az_user WHERE user_id='$id'";
+                            $resultuser=mysql_query($queryuser);
+                             $rowuser=mysql_fetch_array($resultuser);
+              ?>
+            <button id="shortlistjob" type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
           border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
            <span id="">ShortList Candidate</span>
             </button>
             <?php } else {?>
-            <button id="ahortlistjob" type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
+            <button type="button" style="color: #ffffff;text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);background-color: #0158ff;padding: 10px 16px;font-size: 15px;padding: 7.5px 12px;font-size: 12px;border: 1px solid #cccccc;
           border-radius: 4px;display: block;width: 70%;padding-left: 0;padding-right: 0;">
            <span >Login to Select Candidate</span>
             </button>
             <?php  } ?>
-
-            
+            <script>
+             // Shortlist candidate script
+                $('#shortlistjob').click(function(){
+                  var candidateemail="<?php echo $sku;?>";
+                var companyemail="<?php echo $rowuser['email']; ?>";
+                var companyname="<?php  echo $rowuser['firstname']; ?>";
+                var jd="<?php echo $rowuser['resume']; ?>"
+                var candidatename="<?php echo $mpn;?>";
+                $.ajax({url: './catalog/selectcandidate.php?candidateemail='+candidateemail + '&companyemail=' +companyemail + '&companyname=' + companyname + '&candidatename=' +candidatename + '&companyjd=' +jd,
+                     success: function(output) {
+                      $('#alert-sucess2').show();
+                     },
+                   error: function (xhr, ajaxOptions, thrownError) {
+                   //alert(xhr.status + " "+ thrownError);
+                   alert('Something went wrong. Reload the page !!');
+                   }}); 
+              });
+              
+            </script>
            <?php } ?>
 
 

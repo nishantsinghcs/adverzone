@@ -231,6 +231,7 @@ class ControllerProductSearch extends Controller {
 		} else {
 		  $elevel = '';
 		}// end new filter
+		
 		//price for motor
 		if (isset($this->request->get['price1'])){
 			$price1 = $this->request->get['price1'];
@@ -276,6 +277,12 @@ class ControllerProductSearch extends Controller {
 		} else {
 		  $modelwa = '';
 		}
+		//job type company or job needed
+		if (isset($this->request->get['type'])){
+			$type = $this->request->get['type'];
+		} else {
+		  $type = '';
+		}
 		if (isset($this->request->get['search']) || isset($this->request->get['tag'])) {
 			$filter_data = array(
 				'filter_name'         => $search,
@@ -300,8 +307,8 @@ class ControllerProductSearch extends Controller {
 				'year1'				=>$year1,
 				'year2'				=>$year2,
 				'brand'				=>$brand,
-				'modelwa'			=>$modelwa
-
+				'modelwa'			=>$modelwa,
+				'type'				=>$type
 			);
 
 			$product_total = $this->model_catalog_product->getTotalProducts($filter_data);
